@@ -7,13 +7,15 @@ public class Square {
 
     ArrayList<Square> neighbors;
     Player owner;
+    boolean occupied;
 
-    public Square(int x, int y) {
-        value = new Random().nextInt(99) + 1;
+    public Square(int value, int x, int y) {
+        this.value = value;
         neighbors = new ArrayList<>();
         coords = new int[2];
         coords[0] = x;
         coords[1] = y;
+        occupied = false;
     }
 
     public int getValue() {
@@ -58,6 +60,11 @@ public class Square {
 
     public void setOwner(Player player) {
         owner = player;
+        occupied = true;
+    }
+
+    public boolean isOccupied() {
+        return occupied;
     }
 
     public String toString() {
