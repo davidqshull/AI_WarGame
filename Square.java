@@ -5,13 +5,13 @@ public class Square {
     int value;
     int[] coords;
 
-    ArrayList<Square> neighbors;
+    HashMap<String, Square> neighbors;
     Player owner;
     boolean occupied;
 
     public Square(int value, int x, int y) {
         this.value = value;
-        neighbors = new ArrayList<>();
+        neighbors = new HashMap<>();
         coords = new int[2];
         coords[0] = x;
         coords[1] = y;
@@ -42,16 +42,16 @@ public class Square {
         coords[1] = y;
     }
 
-    public ArrayList<Square> getNeighbors() {
+    public HashMap<String, Square> getNeighbors() {
         return neighbors;
     }
 
-    public void addNeighbor(Square neighbor) {
-        neighbors.add(neighbor);
+    public void addNeighbor(String direction, Square neighbor) {
+        neighbors.put(direction, neighbor);
     }
 
-    public void addNeighbors(ArrayList<Square> neighbors) {
-        this.neighbors.addAll(neighbors);
+    public void addNeighbors(HashMap<String, Square> neighbors) {
+        this.neighbors.putAll(neighbors);
     }
 
     public Player getOwner() {
@@ -67,7 +67,15 @@ public class Square {
         return occupied;
     }
 
+    public String neighborString() {
+        String s = "" + coords[0] + coords[1] + ":\n";
+        for(String key: neighbors.keySet()) {
+            s += "  " + key + " > " + neighbors.get(key).getX() + neighbors.get(key).getY() + "\n";
+        }
+        return s;
+    }
+
     public String toString() {
-        return "" + value;
+        return "" + value + owner;
     }
 }
