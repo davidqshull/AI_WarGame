@@ -6,11 +6,15 @@ public class Board {
     ArrayList<ArrayList<Square>> grid;
     Player player1, player2;
     int occupiedCount;
+    ArrayList<Square> occupiedSquares;
+    ArrayList<Square> unoccupiedSquares;
 
-    public Board(File boardFile) {
+    public Board(File boardFile, Player player1, Player player2) {
         this.player1 = player1;
         this.player2 = player2;
         grid = new ArrayList<>();
+        occupiedSquares = new ArrayList<>();
+        unoccupiedSquares = new ArrayList<>();
         setUpBoard(boardFile);
     }
 
@@ -31,6 +35,10 @@ public class Board {
                 grid.add(temp);
             }
             addNeighbors();
+            for(ArrayList<Square> list: grid) {
+                for(Square sq: list)
+                    unoccupiedSquares.add(sq);
+            }
         }
         catch (IOException e) {
             System.out.println("Bad file! Please try again.");
@@ -60,11 +68,32 @@ public class Board {
         return grid;
     }
 
-    public boolean isGameOver() {
+    public boolean gameIsOver() {
         if(occupiedCount == 25) {
             return true;
         }
         return false;
+    }
+
+    public void incrementOccupiedCount() {
+        occupiedCount++;
+    }
+
+    public int getOccupiedCount() {
+        return occupiedCount;
+    }
+
+    public ArrayList<Square> getOccupiedSquares() {
+        return occupiedSquares;
+    }
+
+    public void addOccupiedSquare(Square square) {
+        occupiedSquares.add(square);
+        unoccupiedSquares.remove(square);
+    }
+
+    public ArrayList<Square> getUnoccupiedSquares() {
+        return unoccupiedSquares;
     }
 
     public Square getHighestValueSquare() {
@@ -94,9 +123,9 @@ public class Board {
     }
 
     public String toString() {
-        String s = "\n   A   B   C   D   E\n";
+        String s = "\n    A   B   C   D   E\n";
         for(int i = 0; i < grid.size(); i++) {
-            s+= (i+1) + "  ";
+            s+= (i+1) + "|  ";
             for(Square sq: grid.get(i)) {
                 s += sq + " ";
                 if(sq.toString().length() == 2)

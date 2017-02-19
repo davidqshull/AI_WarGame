@@ -8,6 +8,9 @@ public class Square {
     HashMap<String, Square> neighbors;
     Player owner;
     boolean occupied;
+    HashMap<String, Square> unoccupiedNeighbors;
+    HashMap<String, Square> occupiedNeighbors;
+
 
     public Square(int value, int x, int y) {
         this.value = value;
@@ -16,6 +19,8 @@ public class Square {
         coords[0] = x;
         coords[1] = y;
         occupied = false;
+        unoccupiedNeighbors = new HashMap<>();
+        occupiedNeighbors = new HashMap<>();
     }
 
     public int getValue() {
@@ -42,12 +47,17 @@ public class Square {
         coords[1] = y;
     }
 
+    public int[] getCoords() {
+        return coords;
+    }
+
     public HashMap<String, Square> getNeighbors() {
         return neighbors;
     }
 
     public void addNeighbor(String direction, Square neighbor) {
         neighbors.put(direction, neighbor);
+        unoccupiedNeighbors.put(direction, neighbor);
     }
 
     public void addNeighbors(HashMap<String, Square> neighbors) {
@@ -67,6 +77,43 @@ public class Square {
         return occupied;
     }
 
+    public boolean hasUnoccupiedNeighbors() {
+        for(String key: neighbors.keySet()) {
+            if(neighbors.get(key).isOccupied()) {
+                occupiedNeighbors.put(key, neighbors.get(key));
+            }
+            else {
+                unoccupiedNeighbors.put(key, neighbors.get(key));
+            }
+        }
+        if(occupiedNeighbors.size() > 0)
+            return true;
+        return false;
+    }
+
+    public HashMap<String, Square> getUnoccupiedNeighbors() {
+        return unoccupiedNeighbors;
+    }
+
+    public HashMap<String, Square> getOccupiedNeighbors() {
+        return occupiedNeighbors;
+    }
+
+    public Square removeUnoccupiedNeighbor(String neighborKey) {
+        Square neighbor = unoccupiedNeighbors.remove(neighborKey);
+        occupiedNeighbors.put(neighborKey, neighbor);
+        return neighbor;
+    }
+
+    public Square removeUnoccupiedNeighbor(Square neighbor) {
+        for(String s: unoccupiedNeighbors.keySet()) {
+            if(unoccupiedNeighbors.get(s) == neighbor) {
+                return removeUnoccupiedNeighbor(s);
+            }
+        }
+        return null;
+    }
+
     public String neighborString() {
         String s = "" + coords[0] + coords[1] + ":\n";
         for(String key: neighbors.keySet()) {
@@ -76,6 +123,9 @@ public class Square {
     }
 
     public String toString() {
-        return "" + value + owner;
+        String s = Integer.toString(value);
+        if(owner != null)
+            return s+= owner;
+        return s += "_";
     }
 }

@@ -1,0 +1,23 @@
+WarGame stats:
+
+Random vs Random (B goes first)
+Scores:
+	B=18
+	G=16
+Moves:
+	B=13
+	G=12
+Move time:
+	B=20 microseconds
+	G=13 microseconds
+
+Random vs Random (G goes first)
+Scores:
+	B=16
+	G=18
+Moves:
+	B=12
+	G=13
+Move time:
+	B=14
+	G=13
