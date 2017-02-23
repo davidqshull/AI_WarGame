@@ -18,6 +18,10 @@ public class Board {
         setUpBoard(boardFile);
     }
 
+    // public Board(Board copy) {
+    //     ArrayList<ArrayList<Square>> temp = ;
+    // }
+
     private void setUpBoard(File boardFile) {
         ArrayList<Square> temp;
         try {
@@ -58,6 +62,18 @@ public class Board {
                     grid.get(i).get(j).addNeighbor("Right", grid.get(i).get(j+1));
             }
         }
+    }
+
+    public Player getOpponent(Player player) {
+        return (player1 == player) ? player2 : player1;
+    }
+
+    public Player getPlayer1() {
+        return player1;
+    }
+
+    public Player getPlayer2() {
+        return player2;
     }
 
     public void setSquare(Square square, int x, int y) {

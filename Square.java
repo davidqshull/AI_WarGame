@@ -23,6 +23,14 @@ public class Square {
         occupiedNeighbors = new HashMap<>();
     }
 
+    public Square(Square sq) {
+        this.value = sq.getValue();
+        this.neighbors = HashMap<>(sq.getNeighbors());
+        this.coords[0] = sq.getCoords()[0];
+        this.coords[1] = sq.getCoords()[1];
+        this.owner = new Player(sq.getOwner());
+    }
+
     public int getValue() {
         return value;
     }

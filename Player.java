@@ -15,6 +15,14 @@ public abstract class Player {
         moveTime = 0;
     }
 
+    public Player(Player player) {
+        this.score = player.getScore();
+        this.moves = player.getMoves();
+        this.name = player.getName();
+        this.ownedSquares = new ArrayList<Square>(player.getOwnedSquares());
+        this.moveTime = player.getMoveTime();
+    }
+
     public abstract void makeMove(Board board);
 
     public abstract void paraDrop(Board board);
@@ -46,6 +54,10 @@ public abstract class Player {
         return blitzAbleSquares;
     }
 
+    public ArrayList<Square> getParadropAbleSquares(Board board) {
+        return board.getUnoccupiedSquares();
+    }
+
     public void addOwnedSquare(Square square) {
         ownedSquares.add(square);
     }
@@ -68,6 +80,10 @@ public abstract class Player {
 
     public void incrementMoves() {
         moves++;
+    }
+
+    public int getMoveTime() {
+        return moveTime;
     }
 
     public int getMoves() {
