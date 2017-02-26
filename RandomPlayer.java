@@ -6,6 +6,10 @@ public class RandomPlayer extends Player {
         super(name);
     }
 
+    public RandomPlayer(Player player) {
+        super(player);
+    }
+
     public void makeMove(Board board) {
         int start = (int) System.nanoTime()/1000;
         int moveType;
@@ -48,17 +52,19 @@ public class RandomPlayer extends Player {
         board.addOccupiedSquare(neighbor);
         super.addOwnedSquare(neighbor);
         board.incrementOccupiedCount();
-        super.addToScore(sq.getValue());
+        super.addToScore(neighbor.getValue());
         if(neighbor.getOccupiedNeighbors().size() > 0) {
             for(String key: neighbor.getOccupiedNeighbors().keySet()) {
                 Square temp = neighbor.getOccupiedNeighbors().get(key);
-                Player opponent = temp.getOwner();
-                opponent.subtractFromScore(temp.getValue());
-                addToScore(temp.getValue());
-                temp.setOwner(this);
-                super.addOwnedSquare(temp);
-                opponent.removeOwnedSquare(temp);
-                board.addOccupiedSquare(temp);
+                if(!temp.getOwner().equals(this)) {
+                    Player opponent = temp.getOwner();
+                    opponent.subtractFromScore(temp.getValue());
+                    super.addToScore(temp.getValue());
+                    temp.setOwner(this);
+                    super.addOwnedSquare(temp);
+                    opponent.removeOwnedSquare(temp);
+                    //board.addOccupiedSquare(temp);
+                }
             }
         }
     }

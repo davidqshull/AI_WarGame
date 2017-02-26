@@ -6,7 +6,7 @@ public abstract class Player {
     int moves;
     String name;
     ArrayList<Square> ownedSquares;
-    int moveTime;
+    long moveTime;
 
     public Player(String name) {
         this.name = name;
@@ -18,8 +18,11 @@ public abstract class Player {
     public Player(Player player) {
         this.score = player.getScore();
         this.moves = player.getMoves();
-        this.name = player.getName();
-        this.ownedSquares = new ArrayList<Square>(player.getOwnedSquares());
+        this.name = player.toString();
+        this.ownedSquares = new ArrayList<>();
+        for(Square sq: player.getOwnedSquares()) {
+            this.ownedSquares.add(new Square(sq, this));
+        }
         this.moveTime = player.getMoveTime();
     }
 
@@ -29,15 +32,30 @@ public abstract class Player {
 
     public abstract void blitz(Board board);
 
+    public boolean equals(Player p) {
+        return p.toString().equals(this.name);
+    }
+
+    public static String getPlayerType(Player player) {
+        if(player instanceof RandomPlayer)
+            return "Random";
+        else if(player instanceof MinimaxPlayer)
+            return "Minimax";
+        else if(player instanceof AlphaBetaPlayer)
+            return "AlphaBeta";
+        else
+            return null;
+    }
+
     public String toString() {
         return name;
     }
 
-    public void addToMoveTime(int microseconds) {
-        moveTime+=microseconds;
+    public void addToMoveTime(long nanoseconds) {
+        moveTime+=nanoseconds;
     }
 
-    public int getAverageMoveTime() {
+    public long getAverageMoveTime() {
         return (moveTime/moves);
     }
 
@@ -82,7 +100,7 @@ public abstract class Player {
         moves++;
     }
 
-    public int getMoveTime() {
+    public long getMoveTime() {
         return moveTime;
     }
 

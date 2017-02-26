@@ -21,3 +21,25 @@ Moves:
 Move time:
 	B=14
 	G=13
+
+Minimax vs Minimax (B goes first)
+Scores:
+	B=19
+	G=16
+Moves:
+	B=13
+	G=12
+Move time:
+	B=105368
+	G=100421
+
+Minimax vs Minimax (G goes first)
+Scores:
+	B=
+	G=
+Moves:
+	B=
+	G=
+Move time:
+	B=
+	G=

@@ -18,9 +18,47 @@ public class Board {
         setUpBoard(boardFile);
     }
 
-    // public Board(Board copy) {
-    //     ArrayList<ArrayList<Square>> temp = ;
-    // }
+    public Board(Board copy) {
+        this.grid = new ArrayList<>();
+        for(ArrayList<Square> list: copy.getGrid()) {
+            ArrayList<Square> temp = new ArrayList<>();
+            for(Square sq: list) {
+                temp.add(new Square(sq));
+            }
+            grid.add(temp);
+        }
+        String playerType1 = Player.getPlayerType(copy.getPlayer1());
+        String playerType2 = Player.getPlayerType(copy.getPlayer2());
+        switch (playerType1) {
+            case "Random":
+                this.player1 = new RandomPlayer(copy.getPlayer1());
+                break;
+            case "Minimax":
+                this.player1 = new MinimaxPlayer(copy.getPlayer1());
+                break;
+            case "AlphaBeta":
+                this.player1 = new AlphaBetaPlayer(copy.getPlayer1());
+                break;
+        }
+        switch (playerType2) {
+            case "Random":
+                this.player2 = new RandomPlayer(copy.getPlayer2());
+                break;
+            case "Minimax":
+                this.player2 = new MinimaxPlayer(copy.getPlayer2());
+                break;
+            case "AlphaBeta":
+                this.player2 = new AlphaBetaPlayer(copy.getPlayer2());
+                break;
+        }
+        this.occupiedCount = copy.getOccupiedCount();
+        this.occupiedSquares = new ArrayList<>();
+        for(Square sq: copy.getOccupiedSquares())
+            occupiedSquares.add(new Square(sq));
+        this.unoccupiedSquares = new ArrayList<>();
+        for(Square sq: copy.getUnoccupiedSquares())
+            unoccupiedSquares.add(new Square(sq));
+    }
 
     private void setUpBoard(File boardFile) {
         ArrayList<Square> temp;
@@ -65,7 +103,7 @@ public class Board {
     }
 
     public Player getOpponent(Player player) {
-        return (player1 == player) ? player2 : player1;
+        return (player1.equals(player)) ? player2 : player1;
     }
 
     public Player getPlayer1() {
@@ -78,6 +116,12 @@ public class Board {
 
     public void setSquare(Square square, int x, int y) {
         grid.get(x).set(y, square);
+        for(Square sq: unoccupiedSquares) {
+            if(sq.getX() == x && sq.getY() == y) {
+                sq = square;
+                break;
+            }
+        }
     }
 
     public ArrayList<ArrayList<Square>> getGrid() {
@@ -89,6 +133,10 @@ public class Board {
             return true;
         }
         return false;
+    }
+
+    public Square getSquare(int xCoord, int yCoord) {
+        return grid.get(yCoord).get(xCoord);
     }
 
     public void incrementOccupiedCount() {
@@ -105,7 +153,14 @@ public class Board {
 
     public void addOccupiedSquare(Square square) {
         occupiedSquares.add(square);
-        unoccupiedSquares.remove(square);
+        Square temp = null;
+        for(Square sq: unoccupiedSquares) {
+            if(sq.getX() == square.getX() && sq.getY() == square.getY()) {
+                temp = sq;
+            }
+        }
+        if(temp != null)
+            unoccupiedSquares.remove(temp);
     }
 
     public ArrayList<Square> getUnoccupiedSquares() {

@@ -25,10 +25,47 @@ public class Square {
 
     public Square(Square sq) {
         this.value = sq.getValue();
-        this.neighbors = HashMap<>(sq.getNeighbors());
-        this.coords[0] = sq.getCoords()[0];
-        this.coords[1] = sq.getCoords()[1];
-        this.owner = new Player(sq.getOwner());
+        this.neighbors = new HashMap<>();
+        for(String s: sq.getNeighbors().keySet())
+            this.neighbors.put(s, sq.getNeighbors().get(s));
+        this.coords = new int[] {sq.getCoords()[0], sq.getCoords()[1]};
+        String playerType = Player.getPlayerType(sq.getOwner());
+        if(playerType != null) {
+            switch (playerType) {
+                case "Random":
+                    this.owner = new RandomPlayer(sq.getOwner());
+                    break;
+                case "Minimax":
+                    this.owner = new MinimaxPlayer(sq.getOwner());
+                    break;
+                case "AlphaBeta":
+                    this.owner = new AlphaBetaPlayer(sq.getOwner());
+                    break;
+            }
+        }
+        this.occupied = sq.isOccupied();
+        this.unoccupiedNeighbors = new HashMap<>();
+        for(String s: sq.getUnoccupiedNeighbors().keySet())
+            this.unoccupiedNeighbors.put(s, sq.getUnoccupiedNeighbors().get(s));
+        this.occupiedNeighbors = new HashMap<>();
+        for(String s: sq.getOccupiedNeighbors().keySet())
+            this.occupiedNeighbors.put(s, sq.getOccupiedNeighbors().get(s));
+    }
+
+    public Square(Square sq, Player owner) {
+        this.value = sq.getValue();
+        this.neighbors = new HashMap<>();
+        // for(String s: sq.getNeighbors().keySet())
+        //     this.neighbors.put(s, sq.getNeighbors().get(s));
+        this.coords = new int[] {sq.getCoords()[0], sq.getCoords()[1]};
+        this.owner = owner;
+        this.occupied = sq.isOccupied();
+        this.unoccupiedNeighbors = new HashMap<>();
+        for(String s: sq.getUnoccupiedNeighbors().keySet())
+            this.unoccupiedNeighbors.put(s, sq.getUnoccupiedNeighbors().get(s));
+        this.occupiedNeighbors = new HashMap<>();
+        for(String s: sq.getOccupiedNeighbors().keySet())
+            this.occupiedNeighbors.put(s, sq.getOccupiedNeighbors().get(s));
     }
 
     public int getValue() {
@@ -128,6 +165,10 @@ public class Square {
             s += "  " + key + " > " + neighbors.get(key).getX() + neighbors.get(key).getY() + "\n";
         }
         return s;
+    }
+
+    public boolean equals(Square other) {
+        return Arrays.equals(coords, other.getCoords());
     }
 
     public String toString() {

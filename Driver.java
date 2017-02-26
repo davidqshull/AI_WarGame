@@ -17,6 +17,7 @@ public class Driver {
         String playerType1 = d.askForPlayerType();
         String playerType2 = d.askForPlayerType();
         d.play(boardFile, playerType1, playerType2);
+        //d.test();
     }
 
     public Driver() {
@@ -27,9 +28,34 @@ public class Driver {
 
     }
 
+    private void test() {
+        Player player1 = new MinimaxPlayer("B");
+        Player player2 = new MinimaxPlayer("G");
+        Board b = new Board(boards.get(0), player1, player2);
+        System.out.print("\n");
+        while(true) {
+            player1.makeMove(b);
+            b.printBoard();
+            if(b.gameIsOver())
+                break;
+            player2.makeMove(b);
+            b.printBoard();
+            if(b.gameIsOver())
+                break;
+        }
+
+        b.printBoard();
+
+        System.out.print("\n");
+        player1.printStats();
+        player2.printStats();
+    }
+
     private void play(File board, String playerType1, String playerType2) {
 
-        for(int i = 1; i < 51 && (playerType1.equals("Random") || playerType2.equals("Random")); i++) {
+        //int cap = (playerType1.equals("Random") || playerType2.equals("Random")) ? 51 : 2;
+
+        for(int i = 1; i < 51; i++) {
             player1 = createPlayer(playerType1, 1);
             player2 = createPlayer(playerType2, 2);
 
@@ -42,10 +68,10 @@ public class Driver {
             while(true) {
                 player1.makeMove(b);
                 if(b.gameIsOver())
-                break;
+                    break;
                 player2.makeMove(b);
                 if(b.gameIsOver())
-                break;
+                    break;
                 turnNumber++;
             }
 
@@ -63,7 +89,8 @@ public class Driver {
             score1 += player1.getScore();
             score2 += player2.getScore();
         }
-        printAverages();
+        //if(cap == 51)
+            printAverages();
     }
 
     private Player createPlayer(String playerType, int playerNumber) {
@@ -94,16 +121,23 @@ public class Driver {
     }
 
     private String askForPlayerType() {
-        System.out.println("\nEnter the Player type that you would like to use:\n");
+        System.out.println("\nEnter the number of the Player type that you would like to use:\n");
         System.out.println("Options");
-        for(String s: playerTypes)
-            System.out.println("\t" + s);
+        int i = 1;
+        for(String s: playerTypes) {
+            System.out.println("\t" + "(" + i + ")  " + s);
+            i++;
+        }
         System.out.print("\nChoice: ");
         return handlePlayerTypeInput();
     }
 
     private String handlePlayerTypeInput() {
         String input = System.console().readLine();
+        int i = Integer.parseInt(input);
+        if(i > 0 && i < 4) {
+            return playerTypes.get(i-1);
+        }
         if(!playerTypes.contains(input)) {
             System.out.println("ERROR: Incorrect input!!!");
             System.out.println("Please use one of the exact player types specified.");
@@ -113,11 +147,13 @@ public class Driver {
     }
 
     private File askForBoard() {
-        System.out.println("\nEnter the board that you would like to use:\n");
+        System.out.println("\nEnter the board number that you would like to use:\n");
         System.out.println("Options");
+        int i = 1;
         for (File file: boards) {
-            System.out.println("\t" + file.getName());
+            System.out.println("\t" + "(" + i + ")  " + file.getName());
             mapStrings.add(file.getName());
+            i++;
         }
         System.out.print("\nChoice: ");
         return handleBoardInput();
@@ -125,7 +161,11 @@ public class Driver {
 
     private File handleBoardInput() {
         String input = System.console().readLine();
-        if (!mapStrings.contains(input)) {
+        int i = Integer.parseInt(input);
+        if(i > 0 && i < 6) {
+            return boards.get(i-1);
+        }
+        else if(!mapStrings.contains(input)) {
             System.out.println("\nERROR: Incorrect input!!!");
             System.out.println("Please use one of the exact board names specified.");
             return askForBoard();
