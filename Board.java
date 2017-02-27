@@ -1,3 +1,14 @@
+/*
+David Shull
+CSC 380: Artificial Intelligence
+Project 2: WarGame
+
+Board holds onto the Square objects that are used to play the game, as well as
+the Player objects that are playing the game. A Board is used to track the
+move-by-move progress through the game as well as determine when the game is
+done.
+*/
+
 import java.util.*;
 import java.io.*;
 
@@ -9,6 +20,9 @@ public class Board {
     ArrayList<Square> occupiedSquares;
     ArrayList<Square> unoccupiedSquares;
 
+    /*
+    Normal constructor used to instantiate the board.
+    */
     public Board(File boardFile, Player player1, Player player2) {
         this.player1 = player1;
         this.player2 = player2;
@@ -18,6 +32,9 @@ public class Board {
         setUpBoard(boardFile);
     }
 
+    /*
+    Copy constructor used to create a replica of the board, with all new references.
+    */
     public Board(Board copy) {
         this.grid = new ArrayList<>();
         for(ArrayList<Square> list: copy.getGrid()) {
@@ -60,6 +77,9 @@ public class Board {
             unoccupiedSquares.add(new Square(sq));
     }
 
+    /*
+    Creates the 2-D ArrayList of Square objects based on the file input received.
+    */
     private void setUpBoard(File boardFile) {
         ArrayList<Square> temp;
         try {
@@ -87,6 +107,10 @@ public class Board {
         }
     }
 
+    /*
+    For each Square in the grid, adds the neighboring Square to its neighbors
+    list.
+    */
     private void addNeighbors() {
         for(int i = 0; i < grid.size(); i++) {
             for(int j = 0; j < grid.get(i).size(); j++) {
@@ -102,18 +126,31 @@ public class Board {
         }
     }
 
+    /*
+    Returns the opponent of the input Player.
+    */
     public Player getOpponent(Player player) {
         return (player1.equals(player)) ? player2 : player1;
     }
 
+    /*
+    Returns player 1.
+    */
     public Player getPlayer1() {
         return player1;
     }
 
+    /*
+    Returns player 2.
+    */
     public Player getPlayer2() {
         return player2;
     }
 
+    /*
+    Sets the square at the given coordinates to be equal to the square that is
+    input.
+    */
     public void setSquare(Square square, int x, int y) {
         grid.get(x).set(y, square);
         for(Square sq: unoccupiedSquares) {
@@ -124,10 +161,16 @@ public class Board {
         }
     }
 
+    /*
+    Returns the 2D ArrayList of Squares.
+    */
     public ArrayList<ArrayList<Square>> getGrid() {
         return grid;
     }
 
+    /*
+    Checks whether the game has concluded.
+    */
     public boolean gameIsOver() {
         if(occupiedCount == 25) {
             return true;
@@ -135,22 +178,38 @@ public class Board {
         return false;
     }
 
+    /*
+    Returns the Square at the given coordinates.
+    */
     public Square getSquare(int xCoord, int yCoord) {
         return grid.get(yCoord).get(xCoord);
     }
 
+    /*
+    Increments the number of occupied Squares by 1.
+    */
     public void incrementOccupiedCount() {
         occupiedCount++;
     }
 
+    /*
+    Returns the number of occupied Squares.
+    */
     public int getOccupiedCount() {
         return occupiedCount;
     }
 
+    /*
+    Returns the ArrayList of occupied Squares.
+    */
     public ArrayList<Square> getOccupiedSquares() {
         return occupiedSquares;
     }
 
+    /*
+    Adds the given Square to the list of occupied Squares and removes the Square
+    from the list of unoccupied Squares.
+    */
     public void addOccupiedSquare(Square square) {
         occupiedSquares.add(square);
         Square temp = null;
@@ -163,10 +222,16 @@ public class Board {
             unoccupiedSquares.remove(temp);
     }
 
+    /*
+    Returns the ArrayList of unoccupied Squares.
+    */
     public ArrayList<Square> getUnoccupiedSquares() {
         return unoccupiedSquares;
     }
 
+    /*
+    Returns the Square on the board with the highest value.
+    */
     public Square getHighestValueSquare() {
         Square highestValue = new Square(0, 0, 0);
         for(ArrayList<Square> list: grid) {
@@ -179,10 +244,16 @@ public class Board {
         return highestValue;
     }
 
+    /*
+    Prints the String representation of the Board to the console.
+    */
     public void printBoard() {
         System.out.println(this);
     }
 
+    /*
+    Prints out all Squares followed by their neighbors.
+    */
     public void printAllNeighbors() {
         String s = "";
         for(ArrayList<Square> list: grid) {
@@ -193,6 +264,9 @@ public class Board {
         System.out.println(s);
     }
 
+    /*
+    Converts the Board to a String representation.
+    */
     public String toString() {
         String s = "\n    A   B   C   D   E\n";
         for(int i = 0; i < grid.size(); i++) {

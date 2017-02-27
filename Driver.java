@@ -1,3 +1,12 @@
+/*
+David Shull
+CSC 380: Artificial Intelligence
+Project 2: WarGame
+
+Driver uses all of the other files to execute the WarGame and print out the
+statistics at the end.
+*/
+
 import java.util.*;
 import java.io.*;
 
@@ -11,6 +20,10 @@ public class Driver {
     Board b;
     int moveTime1, moveTime2, score1, score2, moves1, moves2;
 
+    /*
+    Gets all of the necessary inputs from the human, then plays the game. Is
+    run automatically when Driver is run.
+    */
     public static void main(String[] args) {
         Driver d = new Driver();
         File boardFile = d.askForBoard();
@@ -20,6 +33,9 @@ public class Driver {
         //d.test();
     }
 
+    /*
+    Constructor that initializes the global fields.
+    */
     public Driver() {
         boards = new ArrayList<>(Arrays.asList(new File("./GameBoards").listFiles()));
         playerTypes = new ArrayList<>(Arrays.asList("Random", "Minimax", "AlphaBeta"));
@@ -28,34 +44,17 @@ public class Driver {
 
     }
 
-    private void test() {
-        Player player1 = new MinimaxPlayer("B");
-        Player player2 = new MinimaxPlayer("G");
-        Board b = new Board(boards.get(0), player1, player2);
-        System.out.print("\n");
-        while(true) {
-            player1.makeMove(b);
-            b.printBoard();
-            if(b.gameIsOver())
-                break;
-            player2.makeMove(b);
-            b.printBoard();
-            if(b.gameIsOver())
-                break;
-        }
-
-        b.printBoard();
-
-        System.out.print("\n");
-        player1.printStats();
-        player2.printStats();
-    }
-
+    /*
+    Plays the game with the inputs gathered. If either Player is a RandomPlayer,
+    then the game is run 50 times as opposed to once. At the end, of each game,
+    statistics are printed. If the game is run 50 times, then the averages of
+    the games are printed.
+    */
     private void play(File board, String playerType1, String playerType2) {
 
-        //int cap = (playerType1.equals("Random") || playerType2.equals("Random")) ? 51 : 2;
+        int cap = (playerType1.equals("Random") || playerType2.equals("Random")) ? 51 : 2;
 
-        for(int i = 1; i < 51; i++) {
+        for(int i = 1; i < cap; i++) {
             player1 = createPlayer(playerType1, 1);
             player2 = createPlayer(playerType2, 2);
 
@@ -89,10 +88,13 @@ public class Driver {
             score1 += player1.getScore();
             score2 += player2.getScore();
         }
-        //if(cap == 51)
+        if(cap == 51)
             printAverages();
     }
 
+    /*
+    Creates a Player with the given type and number.
+    */
     private Player createPlayer(String playerType, int playerNumber) {
         switch (playerType) {
             case "Random":
@@ -111,6 +113,9 @@ public class Driver {
         return null;
     }
 
+    /*
+    Prints out the average statistics for each player.
+    */
     private void printAverages() {
         System.out.println("\nPlayer B Avg Score: " + score1/50);
         System.out.println("Average moves: " + moves1/50);
@@ -120,6 +125,9 @@ public class Driver {
         System.out.println("Average movetime: " + (moveTime2/50));
     }
 
+    /*
+    Prompts the user for the type of Player.
+    */
     private String askForPlayerType() {
         System.out.println("\nEnter the number of the Player type that you would like to use:\n");
         System.out.println("Options");
@@ -132,9 +140,14 @@ public class Driver {
         return handlePlayerTypeInput();
     }
 
+    /*
+    Handles the input for the player type. If invalid, an error is printed.
+    */
     private String handlePlayerTypeInput() {
         String input = System.console().readLine();
-        int i = Integer.parseInt(input);
+        int i = 0;
+        if(input.matches("[-+]?\\d*\\.?\\d+"))
+            i = Integer.parseInt(input);
         if(i > 0 && i < 4) {
             return playerTypes.get(i-1);
         }
@@ -146,6 +159,9 @@ public class Driver {
         return input;
     }
 
+    /*
+    Prompts the user for the name of a Board file.
+    */
     private File askForBoard() {
         System.out.println("\nEnter the board number that you would like to use:\n");
         System.out.println("Options");
@@ -159,9 +175,15 @@ public class Driver {
         return handleBoardInput();
     }
 
+    /*
+    Handles the input for the name of a Board file, printing an error message
+    if the input is invalid.
+    */
     private File handleBoardInput() {
         String input = System.console().readLine();
-        int i = Integer.parseInt(input);
+        int i = 0;
+        if(input.matches("[-+]?\\d*\\.?\\d+"))
+            i = Integer.parseInt(input);
         if(i > 0 && i < 6) {
             return boards.get(i-1);
         }
@@ -173,6 +195,9 @@ public class Driver {
         return getFileByName(input);
     }
 
+    /*
+    Returns the File associated with the filename.
+    */
     private File getFileByName(String name) {
         File temp = new File("");
         for(int i = 0; i < boards.size(); i++) {

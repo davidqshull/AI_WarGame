@@ -1,15 +1,34 @@
+/*
+David Shull
+CSC 380: Artificial Intelligence
+Project 2: WarGame
+
+This subclass of Player makes its moves by randomly moving into squares on the
+board.
+*/
+
 import java.util.*;
 
 public class RandomPlayer extends Player {
 
+    /*
+    Invokes the superclass constructor on the given String.
+    */
     public RandomPlayer(String name) {
         super(name);
     }
 
+    /*
+    Invokes the superclass copy constructor on the given Player.
+    */
     public RandomPlayer(Player player) {
         super(player);
     }
 
+    /*
+    Takes in a Board object and executes a move onto it. The move to be taken
+    is chosen randomly by randomly deciding whether to blitz or paradrop.
+    */
     public void makeMove(Board board) {
         int start = (int) System.nanoTime()/1000;
         int moveType;
@@ -29,8 +48,12 @@ public class RandomPlayer extends Player {
         super.addToMoveTime((end-start));
     }
 
+    /*
+    Paradrops a Square on the input Board by randomly choosing a Square and then
+    taking it.
+    */
     public void paraDrop(Board board) {
-        Square sq = randomSquare(board, "paradrop", 0);
+        Square sq = randomSquare(board, "paradrop");
         sq.setOwner(this);
         board.incrementOccupiedCount();
         board.addOccupiedSquare(sq);
@@ -38,8 +61,13 @@ public class RandomPlayer extends Player {
         super.addOwnedSquare(sq);
     }
 
+    /*
+    Blitzes a Square on the input Board by randomly choosing a Square, randomly
+    choosing one of its unoccupied neighbors, and moving into it. Any
+    enemy-occupied Squares neighboring the Square moved into are taken as well.
+    */
     public void blitz(Board board) {
-        Square sq = randomSquare(board, "blitz", 0);
+        Square sq = randomSquare(board, "blitz");
         Square neighbor = getRandomUnoccupiedNeighbor(sq);
         if(neighbor.getOwner() != null) {
             System.out.println("Neighbor isn't unoccupied!!");
@@ -69,7 +97,12 @@ public class RandomPlayer extends Player {
         }
     }
 
-    private Square randomSquare(Board board, String caller, int timesCalled) {
+    /*
+    If the caller is the blitz method, then finds a Square that can be
+    can be blitzed from. If the caller is the paraDrop method, then finds a
+    Square that can paradropped.
+    */
+    private Square randomSquare(Board board, String caller) {
         if(caller.equals("blitz")) {
             if(getOwnedSquares().size() == 0)
                 paraDrop(board);
@@ -79,7 +112,7 @@ public class RandomPlayer extends Player {
                 return sq;
             if(sq.getOccupiedNeighbors().size() == 0)
                 paraDrop(board);
-            return randomSquare(board, caller, timesCalled+1);
+            return randomSquare(board, caller);
         }
         else {
             int randomIndex = new Random().nextInt(board.getUnoccupiedSquares().size());
@@ -91,6 +124,9 @@ public class RandomPlayer extends Player {
         }
     }
 
+    /*
+    Randomly chooses one of the unoccupied neighbors of the given Square.
+    */
     private Square getRandomUnoccupiedNeighbor(Square sq) {
         HashMap<String, Square> unoccupiedNeighbors = sq.getUnoccupiedNeighbors();
         int randomKey = new Random().nextInt(unoccupiedNeighbors.size());

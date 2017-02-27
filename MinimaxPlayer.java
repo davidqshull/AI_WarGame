@@ -1,15 +1,35 @@
+/*
+David Shull
+CSC 380: Artificial Intelligence
+Project 2: WarGame
+
+This subclass of Player makes its moves using the minimax adversarial search
+algorithm without alpha beta pruning.
+*/
+
 import java.util.*;
 
 public class MinimaxPlayer extends Player {
 
+    /*
+    Invokes the superclass constructor on the given String.
+    */
     public MinimaxPlayer(String name) {
         super(name);
     }
 
+    /*
+    Invokes the superclass copy constructor on the given Player.
+    */
     public MinimaxPlayer(Player player) {
         super(player);
     }
 
+    /*
+    Takes in a Board object and executes a move onto it. The square to move into
+    is chosen by the minimax algorithm. If the square is blitzable, then the
+    square is blitzed, otherwise, it is paradropped into.
+    */
     public void makeMove(Board board) {
         long start = System.nanoTime()/1000;
         int[] m = minimax(board, 3, true);
@@ -31,10 +51,9 @@ public class MinimaxPlayer extends Player {
         super.addToMoveTime((end-start));
     }
 
-    public void paraDrop(Board board) {
-
-    }
-
+    /*
+    Executes a paradrop move onto the given Square of the given Board.
+    */
     public void paraDrop(Board board, Square sq) {
         sq.setOwner(this);
         board.incrementOccupiedCount();
@@ -46,10 +65,11 @@ public class MinimaxPlayer extends Player {
         }
     }
 
-    public void blitz(Board board) {
-
-    }
-
+    /*
+    Executes a death blitz into the given Square of the given Board. If the
+    Square blitzed into has neighbors occupied by the enemy, then those Squares
+    are taken as well.
+    */
     public int blitz(Board board, Square sq) {
         for(String k: sq.getOccupiedNeighbors().keySet()) {
             if(sq.getOccupiedNeighbors().get(k).getOwner().equals(this)) {
@@ -71,7 +91,6 @@ public class MinimaxPlayer extends Player {
                             temp.setOwner(this);
                             addOwnedSquare(temp);
                             opponent.removeOwnedSquare(temp);
-                            //board.addOccupiedSquare(temp);
                         }
                     }
                 }
@@ -81,13 +100,19 @@ public class MinimaxPlayer extends Player {
         return 0;
     }
 
+    /*
+    If the Board is full and the current player has won, then an otherwise
+    impossibly-high score is returned. If the player has lost, then an otherwise
+    impossibly-low score is returned. Otherwise, the difference between the
+    current player's score and the opponent's score is returned.
+    */
     public int evaluate(Board board) {
         if (board.getUnoccupiedSquares().size() == 0) {
             Player curPlayer = board.getPlayer1().equals(this) ? board.getPlayer1() : board.getPlayer2();
             if(curPlayer.getScore() > board.getOpponent(curPlayer).getScore())
-                return 1000;
+                return 10000;
             else if(curPlayer.getScore() < board.getOpponent(curPlayer).getScore())
-                return -1000;
+                return -10000;
             else
                 return 0;
         }
@@ -96,6 +121,14 @@ public class MinimaxPlayer extends Player {
         return board.getPlayer2().getScore() - board.getPlayer1().getScore();
     }
 
+    /*
+    Uses the minimax adversarial search algorithm to determine the best next
+    move to make. The move is determined by repeatedly making copies of the
+    Board input and acting out the following steps in the game on it. The return
+    is an integer array that stores the best score as its first element (so that
+    the method can be used recursively) and the X and Y coordinate of the best
+    move as the 2nd and 3rd elements.
+    */
     public int[] minimax(Board board, int depth, boolean maxPlayer) {
         int bestScore = (maxPlayer) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
         int currentScore;
