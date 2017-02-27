@@ -16,6 +16,7 @@ public abstract class Player {
     String name;
     ArrayList<Square> ownedSquares;
     long moveTime;
+    int nodesExamined;
 
     /*
     Default constructor, instantiates a Player object.
@@ -25,6 +26,7 @@ public abstract class Player {
         score = 0;
         ownedSquares = new ArrayList<>();
         moveTime = 0;
+        nodesExamined = 0;
     }
 
     /*
@@ -40,6 +42,7 @@ public abstract class Player {
             this.ownedSquares.add(new Square(sq, this));
         }
         this.moveTime = player.getMoveTime();
+        this.nodesExamined = player.getNodesExamined();
     }
 
     public abstract void makeMove(Board board);
@@ -168,6 +171,14 @@ public abstract class Player {
         return moves;
     }
 
+    public void incrementNodes() {
+        nodesExamined++;
+    }
+
+    public int getNodesExamined() {
+        return nodesExamined;
+    }
+
     /*
     Prints out the end-of-game statistics for this Player.
     */
@@ -175,6 +186,8 @@ public abstract class Player {
         System.out.println("Player " + name + " Score: " + score);
         System.out.println("Number of moves: " + moves);
         System.out.println("Average movetime: " + getAverageMoveTime() + " microseconds");
+        System.out.println("Total nodes examined: " + nodesExamined);
+        System.out.println("Average nodes examined per move: " + nodesExamined/moves);
         System.out.print("\n");
     }
 

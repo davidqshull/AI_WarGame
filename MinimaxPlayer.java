@@ -139,6 +139,7 @@ public class MinimaxPlayer extends Player {
             bestScore = evaluate(board);
         else if(maxPlayer) {
             for(Square square: board.getUnoccupiedSquares()) {
+                incrementNodes();
                 Square sq = new Square(square);
                 Board b = new Board(board);
                 Player curPlayer = b.getPlayer1().equals(this) ? b.getPlayer1() : b.getPlayer2();
@@ -159,6 +160,7 @@ public class MinimaxPlayer extends Player {
         }
         else {
             for(Square square: board.getUnoccupiedSquares()) {
+                incrementNodes();
                 Square sq = new Square(square);
                 Board b = new Board(board);
                 Player curPlayer = b.getPlayer1().equals(this) ? b.getPlayer1() : b.getPlayer2();

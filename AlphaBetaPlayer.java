@@ -141,6 +141,7 @@ public class AlphaBetaPlayer extends Player {
         }
         else if(maxPlayer) {
             for(Square square: board.getUnoccupiedSquares()) {
+                incrementNodes();
                 Square sq = new Square(square);
                 Board b = new Board(board);
                 Player curPlayer = b.getPlayer1().equals(this) ? b.getPlayer1() : b.getPlayer2();
@@ -163,6 +164,7 @@ public class AlphaBetaPlayer extends Player {
         }
         else {
             for(Square square: board.getUnoccupiedSquares()) {
+                incrementNodes();
                 Square sq = new Square(square);
                 Board b = new Board(board);
                 Player curPlayer = b.getPlayer1().equals(this) ? b.getPlayer1() : b.getPlayer2();
@@ -172,6 +174,7 @@ public class AlphaBetaPlayer extends Player {
                 curPlayer.addToScore(sq.getValue());
                 curPlayer.addOwnedSquare(sq);
                 curPlayer.incrementMoves();
+                curPlayer.incrementNodes();
                 currentScore = alphabeta(b, depth-1, false, alpha, beta)[0];
                 if(currentScore < beta) {
                     beta = currentScore;
